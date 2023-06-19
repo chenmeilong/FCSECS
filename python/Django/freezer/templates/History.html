@@ -1,0 +1,423 @@
+{% extends 'Template.html' %}
+
+{% block CSS %}
+<style>
+        .hide{
+            display: none;
+        }
+</style>
+{% endblock %}
+
+{% block title1_content %}历史记录查询{% endblock %}
+{% block title2_content %}历史记录查询{% endblock %}
+
+{% block html_content %}
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card" id="show_page">
+                                <!--导航栏-->
+                                <div clss="card-header" style="padding-Top:10px;background:white;height:52px">
+                                    <label style="margin-left: 30px">仓库号：</label>
+                                    <select id="select_freezer" style="padding-bottom:7px;padding-top:7px" >
+                                        <option value="1" selected>冷藏库1</option>
+                                        <option value="2">冷藏库2</option>
+                                        <option value="3">冷藏库3</option>
+                                        <option value="4">冷藏库4</option>
+                                        <option value="5">冷藏库5</option>
+                                        <option value="6">冷藏库6</option>
+                                        <option value="7">冷藏库7</option>
+                                    </select>
+
+                                    <label style="margin-left: 30px">查询类型：</label>
+                                    <select  id="change_tabel_id" style="padding-bottom:7px;padding-top:7px" onchange="change_tabele()" >
+                                        <option value="0" selected>传感器记录</option>
+                                        <option value="1">运行与报警记录</option>
+                                    </select>
+
+                                    <label style="margin-left: 30px">时间：</label>
+                                    <form id="reg_testdate" style="display: inline">
+                                      <select id="select_year" name="YYYY" onchange="YYYYDD(this.value)" style="padding-bottom:7px;padding-top:7px">
+                                        <option value="all">全部</option>
+                                      </select>
+                                      <select  id="select_mon" name="MM" onchange="MMDD(this.value)" style="padding-bottom:7px;padding-top:7px">
+                                        <option  value="all">全部</option>
+                                      </select>
+                                      <select id="select_day"  name="DD" style="padding-bottom:7px;padding-top:7px">
+                                        <option   value="all">全部</option>
+                                      </select>
+
+                                        <select id="select_hour"  name="HH" style="padding-bottom:7px;padding-top:7px">
+                                        <option   value="all">全部</option>
+                                      </select>
+
+                                        <select id="select_min"  name="MIN" style="padding-bottom:7px;padding-top:7px">
+                                        <option   value="all">全部</option>
+                                      </select>
+                                        <select id="select_sec"  name="SEC" style="padding-bottom:7px;padding-top:7px">
+                                        <option  value="all">全部</option>
+                                      </select>
+                                        {#$("#select_year").val()#}
+                                    </form>
+                                    <label id="state_label"  class="hide" style="margin-left: 30px">状态：</label>
+                                    <select id="select_stat" class="hide" name="select_stat" style="padding-bottom:7px;padding-top:7px" >
+                                        <option value="all" selected>全部</option>
+                                        <option value="0">正常</option>
+                                        <option value="1">报警</option>
+                                    </select>
+                                    <button onclick="search()" class="btn btn-success" style="margin-left: 30px"> &nbsp;查 &nbsp; &nbsp;询 &nbsp; </button>
+                                </div>
+
+                                <!--表格部分-->
+                                <div id="sensor_table_html" class="table-responsive" style="width:95%;;margin:auto;margin-top: 20px">
+                                    <table class="table table-hover table-bordered v-middle">
+                                        <thead>
+                                            <tr class="table-info" style="text-align:center">
+                                                <th>温度（°C）</th>
+                                                <th>湿度（%）</th>
+                                                <th>风速（m/s）</th>
+                                                <th>二氧化碳浓度（ppm）</th>
+                                                <th>空气清洁度（ppb）</th>
+                                                <th>时间</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="table-light" id="show_sensor_table">
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                            <div id="control_table_html" class="table-responsive hide" style="width:95%;;margin:auto;margin-top: 20px">
+                                    <table class="table table-hover table-bordered v-middle">
+                                        <thead>
+                                            <tr class="table-info" style="text-align:center">
+{#                                                红点表示故障，绿点表示正常#}
+                                                <th>报警状态</th>
+                                                <th>加湿器</th>
+                                                <th>水泵</th>
+                                                <th>加热</th>
+                                                <th>风扇</th>
+                                                <th>温湿度传感器</th>
+                                                <th>风速仪</th>
+                                                <th>气体传感器</th>
+                                                <th>时间</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="table-light" id="show_control_table">
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                        <!--分页部分-->
+                                <div style="align-content: center!important">
+                                    <table class="ui-pg-table ui-common-table ui-paging-pager" style="margin:auto; width:30%" >
+                                        <tbody>
+                                        <tr>
+                                            <td id="first_pager" class="mdi mdi-page-first"  style="text-align: center"></td>
+                                            <td id="previous_page" class="mdi mdi-chevron-double-left"  style="text-align: center"></td>
+                                            <td  dir="ltr" style="padding-top: 5px">
+                                                <input id="now_page" class="ui-pg-input form-control" type="text" size="2"  value="1" role="textbox" style="margin-right: -33px;margin-bottom: 8px;padding-top: 5px;">
+                                            </td>
+                                            <td id="next_pager" class="mdi mdi-chevron-double-right"  style="text-align: center"></td>
+                                            <td id="last_pager" class="mdi mdi-page-last"  style="text-align: center"></td>
+                                            <td dir="ltr">
+                                                <select  id="page_max" class="ui-pg-selbox form-control" role="listbox" title="每页记录" style="padding-top: 5px;margin-left: 2px;margin-right: -50px;height: 34px">
+                                                <option role="option" value="20" selected="selected">20</option>
+                                                <option role="option" value="50">50</option>
+                                                <option role="option" value="100">100</option>
+                                                </select>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+{% endblock %}
+
+{% block js %}
+     <script>
+        var updata_list        //全局变量
+
+        $('#first_pager').click(function(){
+            $('#now_page').val("1")       //当前页数
+            page_max=parseInt($('#page_max').val())       //当前页数最大数据条数
+            if($('#change_tabel_id').val()=="0")
+            {
+                reload_sensor_table(1,page_max);   //参数当前页数，每页多少条数据
+            }
+            else{
+                reload_control_table(1,page_max);
+            }
+        })
+        $('#previous_page').click(function(){
+            before_op_page=parseInt($('#now_page').val())      //当前页数
+            if(before_op_page>1)
+            {
+                $('#now_page').val(before_op_page-1)
+                page_max=parseInt($('#page_max').val())       //当前页数最大数据条数
+                if($('#change_tabel_id').val()=="0")
+                {
+                    reload_sensor_table(before_op_page-1,page_max);   //参数当前页数，每页多少条数据
+                }
+                else{
+                    reload_control_table(before_op_page-1,page_max);
+                }
+            }
+        })
+        $('#next_pager').click(function(){
+            before_op_page=parseInt($('#now_page').val())       //当前页数
+            page_max=$('#page_max').val()       //当前页数最大数据条数
+            last_pasge=parseInt(updata_list.length/page_max)+1   //计算最后一页
+            if(before_op_page<last_pasge)
+            {
+                $('#now_page').val(before_op_page+1)
+                page_max=$('#page_max').val()       //当前页数最大数据条数
+                if($('#change_tabel_id').val()=="0")
+                {
+                    reload_sensor_table(before_op_page+1,page_max);   //参数当前页数，每页多少条数据
+                }
+                else{
+                    reload_control_table(before_op_page+1,page_max);
+                }
+            }
+        })
+
+        $('#last_pager').click(function(){
+            page_max=parseInt($('#page_max').val())      //当前页数最大数据条数
+            last_pasge=parseInt(updata_list.length/page_max)+1   //计算最后一页
+            $('#now_page').val(last_pasge)       //当前页数
+            if($('#change_tabel_id').val()=="0")
+            {
+                reload_sensor_table(last_pasge,page_max);   //参数当前页数，每页多少条数据
+            }
+            else{
+                reload_control_table(last_pasge,page_max);
+            }
+        })
+
+        function reload_sensor_table(page_num,page_max) {
+            //更新数据
+            $(".auto_line").remove();
+            if(page_num*page_max>updata_list.length)
+            {
+                //此页显示不完全
+                for (var line=page_num*page_max-page_max;line<updata_list.length;line++)
+                {
+                    var temperatureString="<td>"+parseInt(updata_list[line]['temperature_data'])+"</td>";
+                    var humidityString="<td>"+parseInt(updata_list[line]['humidity_data'])+"</td>";
+                    var wind_speedString="<td>"+parseInt(updata_list[line]['wind_speed_data'])+"</td>";
+                    var carbon_dioxideString="<td>"+parseInt(updata_list[line]['carbon_dioxide_data'])+"</td>";
+                    var PVOCString="<td>"+parseInt(updata_list[line]['PVOC_data'])+"</td>";
+                    var op_timeString="<td>"+updata_list[line]['op_time'].slice(0,19)+"</td>";
+                    var tableString="<tr class='auto_line' style='text-align:center'>"+temperatureString+humidityString+wind_speedString+
+                    carbon_dioxideString+PVOCString+op_timeString+"\n "+"</tr>"
+                    $("#show_sensor_table").append(tableString);
+                }
+            }
+            else{
+                for (var line=page_num*page_max-page_max;line<page_num*page_max;line++)
+                {
+                    var temperatureString="<td>"+parseInt(updata_list[line]['temperature_data'])+"</td>";
+                    var humidityString="<td>"+parseInt(updata_list[line]['humidity_data'])+"</td>";
+                    var wind_speedString="<td>"+parseInt(updata_list[line]['wind_speed_data'])+"</td>";
+                    var carbon_dioxideString="<td>"+parseInt(updata_list[line]['carbon_dioxide_data'])+"</td>";
+                    var PVOCString="<td>"+parseInt(updata_list[line]['PVOC_data'])+"</td>";
+                    var op_timeString="<td>"+updata_list[line]['op_time'].slice(0,19)+"</td>";
+                    var tableString="<tr class='auto_line' style='text-align:center'>"+temperatureString+humidityString+wind_speedString+
+                    carbon_dioxideString+PVOCString+op_timeString+"\n "+"</tr>"
+                    $("#show_sensor_table").append(tableString);
+                }
+            }
+        };
+        function reload_control_table(page_num,page_max) {
+            //更新数据
+            $(".auto_line").remove();
+            if(page_num*page_max>updata_list.length)
+            {
+                //此页显示不完全
+                for (var line=page_num*page_max-page_max;line<updata_list.length;line++)
+                {
+                if (updata_list[line]['beep_signal']=="0")
+                {var beep_signal="<td><span class='label label-success label-rounded'>正常</span></td>";}
+                else{var beep_signal="<td><span class='label label-danger label-rounded'>故障</span></td>";}
+                if (updata_list[line]['atomizer_breakdown_signal']=="0")
+                {var atomizer_breakdown_signal="<td><span class='label label-success label-rounded'>正常</span></td>";}
+                else{var atomizer_breakdown_signal="<td><span class='label label-danger label-rounded'>故障</span></td>";}
+                if (updata_list[line]['water_pump_breakdown_signal']=="0")
+                {var water_pump_breakdown_signal="<td><span class='label label-success label-rounded'>正常</span></td>";}
+                else{var water_pump_breakdown_signal="<td><span class='label label-danger label-rounded'>故障</span></td>";}
+                if (updata_list[line]['heat_breakdown_signal']=="0")
+                {var heat_breakdown_signal="<td><span class='label label-success label-rounded'>正常</span></td>";}
+                else{var heat_breakdown_signal="<td><span class='label label-danger label-rounded'>故障</span></td>";}
+                if (updata_list[line]['fan_breakdown_signal']=="0")
+                {var fan_breakdown_signal="<td><span class='label label-success label-rounded'>正常</span></td>";}
+                else{var fan_breakdown_signal="<td><span class='label label-danger label-rounded'>故障</span></td>";}
+                if (updata_list[line]['dht11_breakdown_signal']=="0")
+                {var dht11_breakdown_signal="<td><span class='label label-success label-rounded'>正常</span></td>";}
+                else{var dht11_breakdown_signal="<td><span class='label label-danger label-rounded'>故障</span></td>";}
+                if (updata_list[line]['anemograph_breakdown_signal']=="0")
+                {var anemograph_breakdown_signal="<td><span class='label label-success label-rounded'>正常</span></td>";}
+                else{var anemograph_breakdown_signal="<td><span class='label label-danger label-rounded'>故障</span></td>";}
+                if (updata_list[line]['ccs811_breakdown_signal']=="0")
+                {var ccs811_breakdown_signal="<td><span class='label label-success label-rounded'>正常</span></td>";}
+                else{var ccs811_breakdown_signal="<td><span class='label label-danger label-rounded'>故障</span></td>";}
+                var op_timeString="<td>"+updata_list[line]['op_time'].slice(0,19)+"</td>";
+                var tableString="<tr class='auto_line' style='text-align:center'>"+beep_signal+atomizer_breakdown_signal+water_pump_breakdown_signal+ heat_breakdown_signal+fan_breakdown_signal+dht11_breakdown_signal+anemograph_breakdown_signal+ccs811_breakdown_signal+op_timeString+"\n "+"</tr>"
+                $("#show_control_table").append(tableString);
+                }
+            }
+            else{
+                for (var line=page_num*page_max-page_max;line<page_num*page_max;line++)
+                {
+                if (updata_list[line]['beep_signal']=="0")
+                {var beep_signal="<td><span class='label label-success label-rounded'>正常</span></td>";}
+                else{var beep_signal="<td><span class='label label-danger label-rounded'>故障</span></td>";}
+                if (updata_list[line]['atomizer_breakdown_signal']=="0")
+                {var atomizer_breakdown_signal="<td><span class='label label-success label-rounded'>正常</span></td>";}
+                else{var atomizer_breakdown_signal="<td><span class='label label-danger label-rounded'>故障</span></td>";}
+                if (updata_list[line]['water_pump_breakdown_signal']=="0")
+                {var water_pump_breakdown_signal="<td><span class='label label-success label-rounded'>正常</span></td>";}
+                else{var water_pump_breakdown_signal="<td><span class='label label-danger label-rounded'>故障</span></td>";}
+                if (updata_list[line]['heat_breakdown_signal']=="0")
+                {var heat_breakdown_signal="<td><span class='label label-success label-rounded'>正常</span></td>";}
+                else{var heat_breakdown_signal="<td><span class='label label-danger label-rounded'>故障</span></td>";}
+                if (updata_list[line]['fan_breakdown_signal']=="0")
+                {var fan_breakdown_signal="<td><span class='label label-success label-rounded'>正常</span></td>";}
+                else{var fan_breakdown_signal="<td><span class='label label-danger label-rounded'>故障</span></td>";}
+                if (updata_list[line]['dht11_breakdown_signal']=="0")
+                {var dht11_breakdown_signal="<td><span class='label label-success label-rounded'>正常</span></td>";}
+                else{var dht11_breakdown_signal="<td><span class='label label-danger label-rounded'>故障</span></td>";}
+                if (updata_list[line]['anemograph_breakdown_signal']=="0")
+                {var anemograph_breakdown_signal="<td><span class='label label-success label-rounded'>正常</span></td>";}
+                else{var anemograph_breakdown_signal="<td><span class='label label-danger label-rounded'>故障</span></td>";}
+                if (updata_list[line]['ccs811_breakdown_signal']=="0")
+                {var ccs811_breakdown_signal="<td><span class='label label-success label-rounded'>正常</span></td>";}
+                else{var ccs811_breakdown_signal="<td><span class='label label-danger label-rounded'>故障</span></td>";}
+                var op_timeString="<td>"+updata_list[line]['op_time'].slice(0,19)+"</td>";
+                var tableString="<tr class='auto_line' style='text-align:center'>"+beep_signal+atomizer_breakdown_signal+water_pump_breakdown_signal+ heat_breakdown_signal+fan_breakdown_signal+dht11_breakdown_signal+anemograph_breakdown_signal+ccs811_breakdown_signal+op_timeString+"\n "+"</tr>"
+                $("#show_control_table").append(tableString);
+                }
+            }
+        };
+
+        //查询
+        function search() {
+            $.ajax({
+                url: "/user_app/history/",  //select_stat
+                type: 'POST',
+                data: {'operate': "search", 'freezer_id': $('#select_freezer').val(), 'find_type':$('#change_tabel_id').val(),
+                    'year':$('#select_year').val(),'month':$('#select_mon').val(),'day':$('#select_day').val(),
+                    'hour':$('#select_hour').val(),'minute':$('#select_min').val(),'second':$('#select_sec').val(),'state':$('#select_stat').val()},   //选择提交的数据
+                success: function(data){
+                    if(data.status){
+                        updata_list=data.data//
+                        var page_num=$('#now_page').val()       //当前页数
+                        var page_max=$('#page_max').val()       //当前页数最大数据条数
+                        if($('#change_tabel_id').val()=="0")
+                        {
+                            reload_sensor_table(page_num,page_max);   //参数当前页数，每页多少条数据
+                        }
+                        else{
+                            reload_control_table(page_num,page_max);
+                        }
+                    }else{
+                        layer.alert("没有找到相关数据");
+                    }
+                }
+            });
+        };
+
+
+        function change_tabele() {
+            if ($('#change_tabel_id').val()=="0")
+            {
+                $('#sensor_table_html').removeClass('hide');
+                $('#control_table_html').addClass('hide');
+                $('#state_label').addClass('hide');
+                $('#select_stat').addClass('hide');
+            }
+            else{
+                $('#sensor_table_html').addClass('hide');
+                $('#control_table_html').removeClass('hide');
+                $('#state_label').removeClass('hide');
+                $('#select_stat').removeClass('hide');
+            }
+        };
+        //年月日选择框
+       function YYYYMMDDstart()
+       {
+               MonHead = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+
+               //先给年下拉框赋内容
+               var y  = new Date().getFullYear();
+               for (var i = (y-10); i < (y+10); i++) //以今年为准，前30年，后30年
+                       document.getElementById("reg_testdate").YYYY.options.add(new Option(" "+ i +" 年", i));
+
+               //赋月份的下拉框
+               for (var i = 1; i < 13; i++)
+                       document.getElementById("reg_testdate").MM.options.add(new Option(" " + i + " 月", i));
+               //时下拉
+               for (var i = 1; i < 25; i++)
+                       document.getElementById("reg_testdate").HH.options.add(new Option(" " + i + " 时", i));
+               for (var i = 0; i < 60; i++)
+                       document.getElementById("reg_testdate").MIN.options.add(new Option(" " + i + "分", i));
+               for (var i = 0; i < 60; i++)
+                       document.getElementById("reg_testdate").SEC.options.add(new Option(" " + i + "秒", i));
+
+               document.getElementById("reg_testdate").YYYY.value = y;
+               document.getElementById("reg_testdate").MM.value = new Date().getMonth() + 1;
+               var n = MonHead[new Date().getMonth()];
+               if (new Date().getMonth() ==1 && IsPinYear(YYYYvalue)) n++;
+                    writeDay(n); //赋日期下拉框Author:meizz
+               document.getElementById("reg_testdate").DD.value = new Date().getDate();
+               document.getElementById("reg_testdate").HH.value = new Date().getHours();
+               document.getElementById("reg_testdate").MIN.value = new Date().getMinutes();
+               document.getElementById("reg_testdate").SEC.value = new Date().getSeconds();
+       }
+       if(document.attachEvent)
+           window.attachEvent("onload", YYYYMMDDstart);
+       else
+           window.addEventListener('load', YYYYMMDDstart, false);
+       function YYYYDD(str) //年发生变化时日期发生变化(主要是判断闰平年)
+       {
+               var MMvalue = document.getElementById("reg_testdate").MM.options[document.getElementById("reg_testdate").MM.selectedIndex].value;
+               if (MMvalue == ""){ var e = document.getElementById("reg_testdate").DD; optionsClear(e); return;}
+               var n = MonHead[MMvalue - 1];
+               if (MMvalue ==2 && IsPinYear(str)) n++;
+                    writeDay(n)
+       }
+       function MMDD(str)   //月发生变化时日期联动
+       {
+            var YYYYvalue = document.getElementById("reg_testdate").YYYY.options[document.getElementById("reg_testdate").YYYY.selectedIndex].value;
+            if (YYYYvalue == ""){ var e = document.getElementById("reg_testdate").DD; optionsClear(e); return;}
+            var n = MonHead[str - 1];
+            if (str ==2 && IsPinYear(YYYYvalue)) n++;
+           writeDay(n)
+       }
+       function writeDay(n)   //据条件写日期的下拉框
+       {
+               var e = document.getElementById("reg_testdate").DD; optionsClear(e);
+               for (var i=1; i<(n+1); i++)
+                    e.options.add(new Option(" "+ i + " 日", i));
+       }
+       function IsPinYear(year)//判断是否闰平年
+       {     return(0 == year%4 && (year%100 !=0 || year%400 == 0));}
+       function optionsClear(e)
+       {
+            e.options.length = 1;
+       }
+    </script>
+
+
+    <script>
+        $(function () {
+            $('#sidebarnav > li:nth-child(2)').addClass('selected');  //选择菜单背景
+            $('#sidebarnav > li:nth-child(2) > a').addClass('active');
+            //showAll();        //刷新页面自动加载全部数据库相关内容///////////、？？？？？？？？？？？？？需要提交一遍查找数据
+        });
+    </script>
+{% endblock %}

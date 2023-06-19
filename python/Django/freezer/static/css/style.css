@@ -1,0 +1,429 @@
+@charset "utf-8";
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,dl,dt,dd,ol,nav ul,nav li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td,article,aside,canvas,details,embed,figure,figcaption,footer,header,hgroup,menu,nav,output,ruby,section,summary,time,mark,audio,video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font: inherit;
+	vertical-align: baseline;
+}
+
+article, aside, details, figcaption, figure,footer, header, hgroup, menu, nav, section {
+	display: block;
+}
+
+ol,ul {
+	list-style: none;
+	margin: 0px;
+	padding: 0px;
+}
+
+blockquote,q {
+	quotes: none;
+}
+
+blockquote:before,blockquote:after,q:before,q:after {
+	content: '';
+	content: none;
+}
+
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}/* start editing from here */a {
+	text-decoration: none;
+}
+
+.txt-rt {
+	text-align: right;
+}/* text align right */.txt-lt {
+	text-align: left;
+}/* text align left */.txt-center {
+	text-align: center;
+}/* text align center */.float-rt {
+	float: right;
+}/* float right */.float-lt {
+	float: left;
+}/* float left */.clear {
+	clear: both;
+}/* clear float */.pos-relative {
+	position: relative;
+}/* Position Relative */.pos-absolute {
+	position: absolute;
+}/* Position Absolute */.vertical-base {
+	vertical-align: baseline;
+}/* vertical align baseline */.vertical-top {
+	vertical-align: top;
+}/* vertical align top */nav.vertical ul li {
+	display: block;
+}/* vertical menu */nav.horizontal ul li {
+	display: inline-block;
+}/* horizontal menu */img {
+	max-width: 100%;
+}
+
+h1,h2,h3,h4,h5,h6,a,p,input {
+	 'Raleway'
+	, sans-serif;	margin: 0;
+}
+
+ul,label {
+	margin: 0;
+	padding: 0;
+}
+
+body a:hover,body a {
+	text-decoration: none;
+}/*-- main --*/.agileits_copyright p {
+	font-size: 14px;
+	color: #fff;
+	margin: 0;
+	line-height: 1.8em;
+	text-align: center;
+	padding: 0 1em;
+}
+
+.agileits_copyright p a {
+	color: #FAC718;
+	text-decoration: none;
+}
+
+.agileits_copyright p a:hover {
+	color: #fff;
+}
+
+input[type="submit"],.agileits_copyright p a,.form-module .cta a {
+	transition: .5s ease-in;
+	-webkit-transition: .5s ease-in;
+	-moz-transition: .5s ease-in;
+	-o-transition: .5s ease-in;
+	-ms-transition: .5s ease-in;
+}
+
+.main {
+	padding: 4em 0;
+}
+
+.main h1 {
+	text-align: center;
+	color: #fff;
+	font-size: 2.5em;
+	margin-bottom: 1.5em;
+}/* Form Module */.form-module {
+	position: relative;
+	background: #ffffff;
+	max-width: 400px;
+	width: 100%;
+	border-top: 5px solid #FAC718;
+	box-shadow: 0 0 3px rgba(0, 0, 0, 0.25);
+	margin: 0 auto;
+}
+
+.w3_login_module {
+	min-height: 475px;
+}
+
+.form-module .toggle {
+	cursor: pointer;
+	position: absolute;
+	top: -0;
+	right: -0;
+	background: #FAC718;
+	width: 30px;
+	height: 30px;
+	margin: -5px 0 0;
+	color: #ffffff;
+	font-size: 12px;
+	line-height: 30px;
+	text-align: center;
+}
+
+.form-module .toggle .tooltip {
+	position: absolute;
+	top: 5px;
+	right: -75px;
+	display: block;
+	background: rgba(0, 0, 0, 0.6);
+	width: auto;
+	padding: 5px;
+	font-size: 12px;
+	line-height: 1;
+	text-transform: uppercase;
+	opacity: 1;
+     'Ubuntu'
+	, sans-serif !important;
+}
+
+.form-module .toggle .tooltip:before {
+	content: '';
+	position: absolute;
+	top: 5px;
+	left: -5px;
+	display: block;
+	border-top: 5px solid transparent;
+	border-bottom: 5px solid transparent;
+	border-right: 5px solid rgba(0, 0, 0, 0.6);
+}
+
+.form-module .form {
+	display: none;
+	padding: 40px;
+}
+
+.form-module .form:nth-child(2) {
+	display: block;
+}
+
+.form-module h2 {
+	margin: 0 0 1.5em;
+	color: #212121;
+	font-size: 1.2em;
+	font-weight: 400;
+	line-height: 1;
+}
+
+.form-module input[type="text"],.form-module input[type="password"],.form-module input[type="email"] {
+	outline: none;
+	display: block;
+	width: 100%;
+	border: 1px solid #d9d9d9;
+	margin: 0 0 20px;
+	padding: 10px 15px;
+	box-sizing: border-box;
+	font-weight: 400;
+	-webkit-transition: 0.3s ease;
+	transition: 0.3s ease;
+	font-size: 14px;
+}
+
+.form-module input[type="text"]:focus,.form-module input[type="password"]:focus,.form-module input[type="email"]:focus {
+	border: 1px solid #94DCEB;
+	color: #333333;
+}
+
+.form-module input[type="submit"] {
+	background: #84C639;
+	width: 100%;
+	border: 0;
+	padding: 10px 15px;
+	color: #ffffff;
+	-webkit-transition: 0.3s ease;
+	transition: 0.3s ease;
+	font-size: 14px;
+	font-weight: bold;
+	cursor: pointer;
+	text-transform: uppercase;
+}
+
+.form-module input[type="submit"]:hover {
+	background: #FAC718;
+}
+
+.form-module .cta {
+	background: #FAC718;
+	width: 100%;
+	padding: 15px 40px;
+	box-sizing: border-box;
+	color: #fff;
+	text-align: center;
+}
+
+.form-module .cta a {
+	color: #fff;
+	text-decoration: none;
+	font-size: 1em;
+}
+
+.form-module .cta a:hover {
+	color: #212121;
+}
+
+i.fa.fa-times.fa-pencil {
+	background: url(../images/1.png) no-repeat 7px 5px;
+	display: block;
+	width: 30px;
+	height: 30px;
+}
+
+i.fa.fa-times {
+	background: url(../images/2.png) no-repeat 7px 6px;
+	display: block;
+	width: 30px;
+	height: 30px;
+}/*-- //login --*//*-- start-responsive-design --*/@media (max-width:991px) {
+	.main h1 {
+		font-size: 2.3em;
+	}
+}
+
+@media (max-width: 736px) {
+	.main h1 {
+		font-size: 2em;
+	}
+}
+
+@media (max-width: 600px) {
+	.main h1 {
+		font-size: 1.8em;
+	}
+}
+
+@media (max-width: 568px) {
+	.form-module {
+		max-width: 370px;
+	}
+}
+
+@media (max-width: 480px) {
+	.main h1 {
+		font-size: 1.6em;
+	}
+
+	.form-module .toggle .tooltip {
+		right: -63px;
+		font-size: 10px;
+	}
+
+	.form-module {
+		max-width: 335px;
+	}
+}
+
+@media (max-width: 414px) {
+	.form-module .toggle .tooltip {
+		right: 0;
+		display: none;
+	}
+
+	.form-module .form {
+		padding: 25px;
+	}
+
+	.main h1 {
+		font-size: 1.4em;
+		line-height: 1.5em;
+	}
+
+	.w3_login_module {
+		min-height: 420px;
+	}
+
+	.main {
+		padding: 3em 0;
+	}
+
+	.agileits_copyright p {
+		margin: 1em 0 0;
+	}
+}
+
+@media (max-width: 375px) {
+	.main h1 {
+		font-size: 1.5em;
+	}
+}
+
+@media (max-width: 320px) {
+	.main {
+		padding: 2em 0;
+	}
+
+	.main h1 {
+		font-size: 1.3em;
+	}
+
+	.form-module .form {
+		padding: 15px;
+	}
+
+	.form-module h2 {
+		font-size: 1em;
+	}
+
+	.form-module input[type="text"],.agileits_copyright p, .form-module input[type="password"], .form-module input[type="email"] {
+		font-size: 13px;
+	}
+
+	.form-module .cta a {
+		font-size: 14px;
+	}
+
+	.form-module .cta {
+		padding: 10px 0px;
+	}
+
+	.form-module {
+		max-width: 275px;
+	}
+
+	.w3_login_module {
+		min-height: 380px;
+	}
+
+	.w3_login_module {
+		min-height: 300px;
+	}
+}
+
+
+#code input[type="button"]{
+	width:80px;
+	height:40px;
+	font-family: Arial, 宋体;
+	font-style: italic;
+	color: blue;
+	size: 12px;
+	border: 0;
+	padding: 2px 3px;
+	letter-spacing: 8px;
+	font-weight: bolder;
+}
+
+/*背景图片*/
+.screenbg {
+	position:fixed;
+	bottom:0;
+	left:0;
+	z-index:-999;
+	overflow:hidden;
+	width:100%;
+	height:100%;
+	min-height:100%;
+}
+.screenbg ul li {
+	display:block;
+	list-style:none;
+	position:fixed;
+	overflow:hidden;
+	top:0;
+	left:0;
+	width:100%;
+	height:100%;
+	z-index:-1000;
+	float:right;
+}
+.screenbg ul a {
+	left:0;
+	top:0;
+	width:100%;
+	height:100%;
+	display:inline-block;
+	margin:0;
+	padding:0;
+	cursor:default;
+}
+.screenbg a img {
+	vertical-align:middle;
+	display:inline;
+	border:none;
+	display:block;
+	list-style:none;
+	position:fixed;
+	overflow:hidden;
+	top:0;
+	left:0;
+	width:100%;
+	height:100%;
+	z-index:-1000;
+	float:right;
+}

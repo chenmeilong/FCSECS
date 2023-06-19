@@ -1,0 +1,38 @@
+{% extends 'Template.html' %}
+
+{% block CSS %}
+{% endblock %}
+
+{% block title1_content %}主页{% endblock %}
+{% block title2_content %}{% endblock %}
+
+{% block html_content %}
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <div style="text-align: center"> <p class="" style="font-size:36px;">{{ user_name }}您好，欢迎您登录基于BIM的可视化管理平台</p> </div>
+
+                                <div style="margin-left: 37%"><p>功能使用说明:</p></div>
+                                <div style="margin-left: 40%">
+                                    <p>1.实时监测冷藏库传感器数据</p>
+                                    <p>2.动态添加存储的水果信息</p>
+                                    <p>3.自动控制冷藏库设备与故障报警</p>
+                                    <p>4.手动控制冷藏库设备与故障报警</p>
+                                    <p>5.BIM模型显示设备运行状况</p>
+                                    <p>6.查询历史传感器数据和报警记录</p>
+                                    <p>7.用户信息修改</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+{% endblock %}
+
+{% block js %}
+    <script>
+        //js脚本
+    </script>
+{% endblock %}

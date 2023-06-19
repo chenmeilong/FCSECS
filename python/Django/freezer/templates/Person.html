@@ -1,0 +1,153 @@
+{% extends 'Template.html' %}
+
+{% block CSS %}
+
+{% endblock %}
+
+
+{% block title1_content %}个人信息维护{% endblock %}
+{% block title2_content %}个人信息维护{% endblock %}
+
+{% block html_content %}
+    <div class="container-fluid">
+                <div class="row">
+                    <div class="col-lg-4 col-xlg-3 col-md-5">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="m-t-30 text-center" style="margin-top: 20px">
+                                    <img src="/static/assets/images/users/user.jpg" class="rounded-circle" width="150" />
+                                    <h4 class="card-title m-t-10" id="show_user_name" style="margin-top: 15px">{{user_name}}</h4>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="card-body" style="margin-bottom: 28px">
+                                <small >账号：</small><h6>{{user_code}}</h6>
+                                <small >电话：</small><h6 id="show_user_phone">{{user_phone}}</h6>
+                                <small >邮箱：</small><h6 id="show_user_mail">{{user_mail}}</h6>
+                                <small >备注：</small><h6>{{remark}}</h6>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-8 col-xlg-9 col-md-7">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="form-group">
+                                    <label class="col-md-12">昵称</label>
+                                    <div class="col-md-12">
+                                        <input type="text" id="user_name" class="form-control form-control-line">
+                                    </div>
+                                </div>
+                                    <div class="custom-control custom-checkbox" style="float: right">
+                                        <input type="checkbox" class="custom-control custom-checkbox custom-control-input" id="customCheck1">
+                                        <label class="custom-control-label" for="customCheck1">修改密码</label>
+                                    </div>
+                                <div class="form-group">
+                                    <label class="col-md-12">原始新密码</label>
+                                    <div class="col-md-12">
+                                        <input type="password" id="old_password" placeholder="请输入原始密码" readonly="true" class="form-control form-control-line">
+                                    </div>
+                                </div>
+
+
+                                <div class="form-group">
+                                    <label class="col-md-12">新密码</label>
+                                    <div class="col-md-12">
+                                        <input type="password"  id="new_password" placeholder="请输入新密码" readonly="true" class="form-control form-control-line">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-md-12">确认密码</label>
+                                    <div class="col-md-12">
+                                        <input type="password"  id="again_password" placeholder="请确认密码" readonly="true" class="form-control form-control-line">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="example-email" class="col-md-12">邮箱</label>
+                                    <div class="col-md-12">
+                                        <input type="email"  id="user_mail" class="form-control form-control-line" name="example-email" id="example-email">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-md-12">联系电话</label>
+                                    <div class="col-md-12">
+                                        <input type="text"  id="user_phone" class="form-control form-control-line">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-sm-12">
+                                        <button class="btn btn-success" id="submit_btn">提交</button>
+                                        <button class="btn btn-primary" id="reset_btn">重填</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+    </div>
+{% endblock %}
+
+{% block js %}
+
+    <script>
+        (function () {
+            $('#user_name').val($('#show_user_name').text());
+            $('#user_phone').val($('#show_user_phone').text());
+            $('#user_mail').val($('#show_user_mail').text());
+        })();
+
+        //重置密码 按钮 判断输入框状态
+        $('#customCheck1').click(function() {
+            if ($('#customCheck1').attr("checked") == "checked") {
+                 $("#old_password").attr("readonly","True");
+                 $("#new_password").attr("readonly","True");
+                 $("#again_password").attr("readonly","True");
+                 $('#customCheck1').removeAttr("checked");
+            }
+            else {
+                 $("#old_password").removeAttr("readonly");
+                 $("#new_password").removeAttr("readonly");
+                 $("#again_password").removeAttr("readonly");
+                 $('#customCheck1').attr("checked","checked");
+            }
+        });
+
+        //重置按钮
+        $('#reset_btn').click(function() {
+            $('#user_name').val("");
+            $('#old_password').val("");
+            $('#new_password').val("");
+            $('#again_password').val("");
+            $('#user_mail').val("");
+            $('#user_phone').val("");
+        });
+
+        //ajax提交数据
+            $('#submit_btn').click(function(){
+                $.ajax({
+                    url: "/user_app/person/",
+                    type: 'POST',
+                    data: {'user_name': $('#user_name').val(), 'old_password': $('#old_password').val(), 'new_password': $('#new_password').val(),
+                        'again_password': $('#again_password').val(), 'user_phone': $('#user_phone').val(), 'user_mail': $('#user_mail').val(),'change_password': $('#customCheck1').is(':checked')},
+                    success: function(data){
+                        var obj = JSON.parse(data);
+                        if(obj.status){
+                              console.log("提交成功了");
+                              window.location.reload()
+                        }else{
+                            layer.alert(obj.error);
+                        }
+                    }
+                })
+            });
+
+        //自动执行的函数  左边的选框
+        (function () {
+            $('#sidebarnav > li:nth-child(3)').addClass('selected');  //选择菜单背景
+            $('#sidebarnav > li:nth-child(3) > a').addClass('active');
+        })();
+    </script>
+{% endblock %}

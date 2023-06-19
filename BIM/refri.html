@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+ <title>知屋安砖开放平台快速上手教程示例</title>
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <link rel="stylesheet" href="https://platform.zhuanspace.com/bos3d/latest/BIMWINNER.BOS3D.min.css"/>
+ </head>
+ <body style="overflow: hidden; outline: none; margin: 0">
+  <div id="viewport"></div>
+  
+  <script type="application/javascript" src=
+  "https://platform.zhuanspace.com/bos3d/latest/BIMWINNER.BOS3D.min.js"></script>
+  <script type="text/javascript">
+   //  配置三维主对象参数
+   const option = {
+   host: "https://webapi.zhuanspace.com",
+    viewport: "viewport"
+   };
+   // 初始化主对象
+   const viewer3D = new BIMWINNER.BOS3D.Viewer(option);
+   // 创建工具栏
+   const tool = new BIMWINNER.BOS3D.ToolBar(viewer3D);
+    tool.createTool();
+   // 模型画布自适应窗口大小
+   viewer3D.resize(1180,400);
+   // 用户开发密钥
+   const devcode = "825ad22ec4d5c4e61aad2ce16a0d4681";
+   // 模型文件key
+   // 模型文件key
+   const modelKey = "1575603368";
+   // 添加视图
+   viewer3D.addView(modelKey, devcode);
+   // 监听浏览器窗口变化，自动适应画布为浏览器窗口大小
+   window.addEventListener('resize', function () {
+    viewer3D.resize(window.innerWidth, window.innerHeight);
+   });
+  </script>
+ </body>
+</html>

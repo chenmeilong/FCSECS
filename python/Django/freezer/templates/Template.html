@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <!-- icon图标 -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/static/images/hrbu.ico">
+    <title>基于BIM的可视化管理平台</title>
+    <!-- css代码导入-->
+    <link href="/static/dist/css/style.min.css" rel="stylesheet">
+    <link href="/static/css/button.css" rel="stylesheet">
+    {% block CSS %}{% endblock %}
+</head>
+
+<body>
+    <!-- 加载的动画效果-->
+    <div class="preloader">
+        <div class="lds-ripple">
+            <div class="lds-pos">loading</div>
+        </div>
+    </div>
+    <!-- 这是全文div -->
+    <div id="main-wrapper" data-navbarbg="skin6" data-theme="light" data-layout="vertical" data-sidebartype="full" data-boxed-layout="full">
+
+        <!-- 顶上的标题栏 -->
+        <header class="topbar" data-navbarbg="skin6">
+            <nav class="navbar top-navbar navbar-expand-md navbar-light">
+                <div class="navbar-header" data-logobg="skin5">
+                    <!-- 左上角的logo -->
+                    <div class="navbar-brand">
+                        <a href="/user_app/home/" class="logo">
+                            <!-- Logo icon -->
+                            <b class="logo-icon">
+                                <img src="/static/assets/images/logo-light-icon.png" alt="homepage" class="light-logo" style="margin-bottom: 4px"/>
+                            </b>
+                            <span class="logo-text" style="color: white;" >功能菜单
+                            </span>
+                        </a>
+                    </div>
+                    <!-- 页面自定义收缩 -->
+                    <a class="topbartoggler d-block d-md-none waves-effect waves-light" href="javascript:void(0)" data-toggle="collapse" data-target="#navbarSupportedContent"
+                        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                        <i class="ti-more"></i>
+                    </a>
+                </div>
+                <!-- End Logo -->
+                <div class="navbar-collapse collapse" id="navbarSupportedContent" data-navbarbg="skin6">
+                    <ul class="navbar-nav float-left mr-auto">
+                        <!-- 搜索框-->
+                        <li class="nav-item search-box">
+                            <a class="nav-link waves-effect waves-dark" href="javascript:void(0)">
+                                <div class="d-flex align-items-center">
+                                    <i class="mdi mdi-magnify font-20 mr-1"></i>
+                                    <div class="ml-1 d-none d-sm-block">
+                                        <span>搜索</span>
+                                    </div>
+                                </div>
+                            </a>
+                            <form class="app-search position-absolute">
+                                <input type="text" class="form-control" placeholder="请输入搜索内容">
+                                <a class="srh-btn">
+                                    <i class="ti-close"></i>
+                                </a>
+                            </form>
+                        </li>
+                    </ul>
+                    <!-- 右侧的导航图标 -->
+                    <ul class="navbar-nav float-right">
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-muted waves-effect waves-dark pro-pic" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><img src="/static/assets/images/users/user.jpg" alt="user" class="rounded-circle" width="31"></a>
+                            <div class="dropdown-menu dropdown-menu-right user-dd animated">
+                                <a class="dropdown-item" href="/user_app/bim/"><i class="mdi mdi-monitor"></i>&nbsp;BIM监控平台</a>
+                                <a class="dropdown-item" href="/user_app/history/"><i class="mdi mdi-history"></i>&nbsp;历史记录查询</a>
+                                <a class="dropdown-item" href="/user_app/person/"><i class="mdi mdi-account-circle"></i>&nbsp;个人信息维护</a>
+                                <a class="dropdown-item" href="/user_app/logout/"><i class="mdi mdi-logout"></i>&nbsp;退出登录</a>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </header>
+
+
+        <aside class="left-sidebar" data-sidebarbg="skin5">
+            <!-- Sidebar scroll-->
+            <div class="scroll-sidebar">
+                <!-- Sidebar navigation-->
+                <nav class="sidebar-nav">
+                    <ul id="sidebarnav">
+                        <li class="sidebar-item ">   <!-- 需要增加 属性 selected  下面的需要增加activate-->
+                            <a class="sidebar-link waves-effect waves-dark sidebar-link" href="/user_app/bim/" aria-expanded="false">
+                                <i class="mdi mdi-monitor"></i>
+                                <span class="hide-menu">BIM监控平台</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-item ">   <!-- 需要增加 属性 selected  下面的需要增加activate-->
+                            <a class="sidebar-link waves-effect waves-dark sidebar-link" href="/user_app/history/" aria-expanded="false">
+                                <i class="mdi mdi-history"></i>
+                                <span class="hide-menu">历史记录查询</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a class="sidebar-link waves-effect waves-dark sidebar-link" href="/user_app/person/" aria-expanded="false">
+                                <i class="mdi mdi-account-circle"></i>
+                                <span class="hide-menu">个人信息维护</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+                <!-- End Sidebar navigation -->
+            </div>
+            <!-- End Sidebar scroll-->
+        </aside>
+
+        <!-- 这是导航栏 -->
+        <div class="page-wrapper">
+            <div class="page-breadcrumb">
+                <div class="row">
+                    <div class="col-5 align-self-center">
+                        <h4 class="page-title">{% block title1_content %} {% endblock %}</h4>
+                    </div>
+                    <div class="col-7 align-self-center">
+                        <div class="d-flex align-items-center justify-content-end">
+                            <nav aria-label="breadcrumb">
+                                <ol class="breadcrumb">
+                                    <li class="breadcrumb-item">
+                                        <a href="/user_app/home/">主页</a>
+                                    </li>
+                                    <li class="breadcrumb-item active" aria-current="page"> {% block title2_content %} {% endblock %}</li>
+                                </ol>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        {% block html_content %} {% endblock %}
+
+
+        </div>
+
+    </div>
+    <script src="/static/assets/libs/jquery/dist/jquery.min.js"></script>
+    <!-- Bootstrap tether Core JavaScript -->
+    <script src="/static/assets/libs/popper.js/dist/umd/popper.min.js"></script>
+    <script src="/static/assets/libs/bootstrap/dist/js/bootstrap.min.js"></script>
+    <!-- slimscrollbar scrollbar JavaScript -->
+    <script src="/static/assets/extra-libs/sparkline/sparkline.js"></script>
+    <!--Wave Effects -->
+    <script src="/static/dist/js/waves.js"></script>
+    <!--Menu sidebar -->
+    <script src="/static/dist/js/sidebarmenu.js"></script>
+    <!--Custom JavaScript -->
+    <script src="/static/dist/js/custom.min.js"></script>
+    <script src="/static/js/echarts.min.js"></script>
+    <script type="text/javascript" charset="utf-8" src="/static/js/layer/layer.min.js"></script>
+    <script type="text/javascript" charset="utf-8" src="/static/js/layer/extend/layer.ext.min.js"></script>
+
+    {% block js %} {% endblock %}
+</body>
+
+</html>

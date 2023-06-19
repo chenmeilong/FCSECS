@@ -1,0 +1,1057 @@
+{% extends 'Template.html' %}
+
+{% block CSS %}
+<style>
+        .hide{
+            display: none;
+        }
+</style>
+     <link rel="stylesheet" href="https://xhz3d.bos.xyz/v1/Xhz.min.css">
+     <script src="https://xhz3d.bos.xyz/v1/Xhz.min.js"></script>
+     <script type="text/javascript" src="https://www.bos.xyz/vizbim/Tween.js"></script>
+{% endblock %}
+{% block title1_content %}BIM监控平台{% endblock %}
+{% block title2_content %}BIM监控平台{% endblock %}
+
+{% block html_content %}
+           <div class="container-fluid" id="show_page">
+                <div class="row">
+                    <div class="col-12" style="margin-bottom: -17px;">
+                        <div class="card" >
+                                <!--导航栏-->
+                                <div clss="card-header" style="padding-Top:10px;background:white;height:52px">
+                                    <label style="margin-left: 30px">仓库号：</label>
+                                    <select  style="padding-bottom:7px;padding-top:7px" >
+                                        <option value="0" selected>冷藏库1</option>
+                                        <option value="1">冷藏库2</option>
+                                        <option value="2">冷藏库3</option>
+                                        <option value="3">冷藏库4</option>
+                                        <option value="4">冷藏库5</option>
+                                        <option value="5">冷藏库6</option>
+                                        <option value="6">冷藏库7</option>
+                                    </select>
+
+                                    <label style="margin-left: 30px">果品类型：</label>
+                                    <select id="fruit_select" style="padding-bottom:7px;padding-top:7px" >
+                                    </select>
+                                    <button onclick="change_fruit_type()" class="btn btn-success" style="margin-left: 30px"> &nbsp;确 &nbsp; &nbsp;定 &nbsp; </button>
+                                    <button onclick="add_fruit()" class="btn btn-success">添加果品</button>
+                                </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="row" syle="padding-top:150px;" style="margin-right: -17px;">
+                    <div class="col-md-8">
+                        <div class="card">
+                            <div class="card-body">
+                                <input style="margin-left: 10px;margin-top: 4px;float: left;" type="radio" name="check_sensor" value="1" checked="checked"/>
+                                <label style="float: left;">温度：</label>
+                                <label id="temperature" style="float: left; font-size:14px">+32°C</label>
+
+                                <input style="margin-left: 30px;margin-top: 4px;float: left;" type="radio" name="check_sensor" value="2"  />
+                                <label style="float: left;">湿度：</label>
+                                <label id="humidity" style="float: left; font-size:14px">32%</label>
+
+                                <input style="margin-left: 30px;margin-top: 4px;float: left;" type="radio" name="check_sensor" value="3"  />
+                                <label style="margin-left: 0px;float: left;">风速：</label>
+                                <label id="wind_speed" style="float: left; font-size:14px">10m/s</label>
+
+                                <input style="margin-left: 30px;margin-top: 4px;float: left;" type="radio" name="check_sensor" value="4"  />
+                                <label style="float: left;">CO2：</label>
+                                <label id="carbon_dioxide" style="float: left; font-size:14px">200ppm</label>
+
+                                <input style="margin-left: 30px;margin-top: 4px;float: left;" type="radio" name="check_sensor" value="5"  />
+                                <label style="float: left;">TVOC：</label>
+                                <label id="PVOC" style="float: left; font-size:14px">100ppb</label>
+
+                                <div id="draw_chart" style="width: 750px;height:300px;text-align:center;margin-top: 16px;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4" style="margin-left: -17px;padding-right: 0px">
+                        <div class="card" style="padding-bottom: 23px;">
+                            <div class="card-body">
+                                <div style="margin-left: 10px">
+                                    <h5 class="card-title m-b-5"  style=" margin-top: 7px">故障显示与设备控制</h5>
+                                    <label style=" margin-top: 7px;padding-left:15px;float:left">手动控制：</label>
+                                    <input id="manual_control_signal" style="margin-top: 0px;border-style:none" type="checkbox"  class="uiswitch my-switch">
+                                    <button onclick="submit_control_data()" class="btn btn-success" style="margin-left: 153px;margin-top: -20px">&nbsp;确定 &nbsp;</button>
+
+                                </div>
+                                <div class="m-t-30">
+                                    <div class="row text-center">
+                                        <div class="col-6 border-right">
+                                            <div>
+                                                <label id="color_beep_signal" style="background:#ffffff;margin-top: 7px;width: 20px;height:20px;float:left"></label>
+                                                <label style=" margin-top: 7px;margin-left: 5px;float:left">报警：</label>
+                                                <input id="beep_signal" style="margin-top: 0px;border-style:none" type="checkbox"  class="uiswitch warning">
+                                            </div>
+
+                                            <div>
+                                                <label id="color_atomizer_signal" style="background:#ffffff;margin-top: 7px;width: 20px;height:20px;float:left"></label>
+                                                <label style=" margin-top: 7px;margin-left: 5px;float:left">加湿：</label>
+                                                <input id="atomizer_signal" style="margin-top: 0px;border-style:none" type="checkbox"  class="uiswitch">
+                                            </div>
+
+                                            <div>
+                                                <label id="color_water_pump_signal" style="background:#ffffff;margin-top: 7px;width: 20px;height:20px;float:left"></label>
+                                                <label style=" margin-top: 7px;margin-left: 5px;float:left">降温：</label>
+                                                <input id="water_pump_signal" style="margin-top: 0px;border-style:none" type="checkbox"  class="uiswitch">
+                                            </div>
+
+                                            <div>
+                                                <label id="color_heat_signal" style="background:#ffffff;margin-top: 7px;width: 20px;height:20px;float:left"></label>
+                                                <label style=" margin-top: 7px;margin-left: 5px;float:left">升温：</label>
+                                                <input id="heat_signal" style="margin-top: 0px;border-style:none" type="checkbox"  class="uiswitch">
+                                            </div>
+
+                                            <div>
+                                                <label id="color_fan_signal" style="background:#ffffff;margin-top: 7px;width: 20px;height:20px;float:left"></label>
+                                                <label style=" margin-top: 7px;margin-left: 5px;float:left">风扇：</label>
+                                                <input id="fan_signal" style="margin-top: 0px;border-style:none" type="checkbox"  class="uiswitch">
+                                            </div>
+
+                                            <div>
+                                                <label id="color_atomizer_breakdown_signal" style="background:#ffffff;margin-top: 7px;width: 20px;height:20px;float:left"></label>
+                                                <label style=" margin-top: 7px;margin-left: 5px;float:left">雾化故障：</label>
+                                                <input id="atomizer_breakdown_signal" style="margin-top: 0px;margin-left: -29px;border-style:none" type="checkbox"  class="uiswitch warning">
+                                            </div>
+                                        </div>
+                                        <div class="col-6">
+                                            <div>
+                                                <label id="color_water_pump_breakdown_signal" style="background:#ffffff;margin-top: 7px;width: 20px;height:20px;float:left"></label>
+                                                <label style=" margin-top: 7px;letter-spacing:2px;margin-left: 5px;float:left">压缩机故障：</label>
+                                                <input id="water_pump_breakdown_signal" style="margin-top: 0px;border-style:none" type="checkbox"  class="uiswitch warning">
+                                            </div>
+
+                                            <div>
+                                                <label id="color_heat_breakdown_signal" style="background:#ffffff;margin-top: 7px;width: 20px;height:20px;float:left"></label>
+                                                <label style=" margin-top: 7px;letter-spacing:6px;margin-left: 5px;float:left">升温故障：</label>
+                                                <input id="heat_breakdown_signal" style="margin-top: 0px;margin-left:-6px;border-style:none" type="checkbox"  class="uiswitch warning">
+                                            </div>
+
+                                            <div>
+                                                <label id="color_fan_breakdown_signal" style="background:#ffffff;margin-top: 7px;width: 20px;height:20px;float:left"></label>
+                                                <label style=" margin-top: 7px;letter-spacing:6px;margin-left: 5px;float:left">风扇故障：</label>
+                                                <input id="fan_breakdown_signal" style="margin-top: 0px;margin-left:-6px;border-style:none" type="checkbox"  class="uiswitch warning">
+                                            </div>
+
+                                            <div>
+                                                <label id="color_dht11_breakdown_signal" style="background:#ffffff;margin-top: 7px;width: 20px;height:20px;float:left"></label>
+                                                <label style=" margin-top: 7px;letter-spacing:1px;margin-left: 5px;float:left">DHT22故障：</label>
+                                                <input id="dht11_breakdown_signal" style="margin-top: 0px;border-style:none" type="checkbox"  class="uiswitch warning">
+                                            </div>
+
+                                            <div>
+                                                <label id="color_anemograph_breakdown_signal" style="background:#ffffff;margin-top: 7px;width: 20px;height:20px;float:left"></label>
+                                                <label style=" margin-top: 7px;letter-spacing:2px;margin-left: 5px;float:left">风速仪故障：</label>
+                                                <input id="anemograph_breakdown_signal" style="margin-top: 0px;border-style:none" type="checkbox"  class="uiswitch warning">
+                                            </div>
+
+                                            <div>
+                                                <label id="color_ccs811_breakdown_signal" style="background:#ffffff;margin-top: 7px;width: 20px;height:20px;float:left"></label>
+                                                <label style=" margin-top: 7px;margin-left: 5px;float:left">CCS811故障：</label>
+                                                <input id="ccs811_breakdown_signal" style="margin-top: 0px;border-style:none" type="checkbox"  class="uiswitch warning">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" >
+                    <div class="col-12">
+                        <div class="card" style="margin-top:-18px">
+                            <div class="card-body">
+
+                              <div id="viewport"></div>
+                               <div class="xhz-demo-actions">
+                                    <span id="xhz-btn-transparency">透明</span>
+                                    <span id="xhz-btn-reset">恢复</span>
+                              </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="container-fluid hide" id="add_page">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card " >
+                            <div class="card-header" style="padding-Top:10px;background:white;height:40px;text-align: right;padding-right: 50px;">
+                                <button onclick="add_returen()" class="btn btn-success">  &nbsp;返 &nbsp; &nbsp; 回&nbsp;  </button>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table v-middle">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col"></th>
+                                                <th scope="col"></th>
+                                                <th scope="col"><h4 class="">添加果品</h4></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td scope="row"></td>
+                                                <td scope="row" style="text-align: right"><span class="col-md-12" style="margin-right: -30px;">果品名:</span></td>
+                                                <td> <input type="text" id="input_fruit_name" class="form-control-line"></td>
+                                            </tr>
+                                            <tr>
+                                                <td scope="row"></td>
+                                                <td scope="row" style="text-align: right;"><span class="col-md-12" style="margin-right: -30px;">温度(°C)最大值:</span></td>
+                                                <td> <input type="text" id="input_temperature_max" class="form-control-line" style="width: 50px;height:30px;">
+                                                    <span class="col-md-12" style="margin-right: -5px;">最小值:</span>
+                                                    <input type="text" id="input_temperature_min" class="form-control-line" style="width: 50px;height:30px;">
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td scope="row"></td>
+                                                <td scope="row" style="text-align: right;"><span class="col-md-12" style="margin-right: -30px;">湿度(%)最大值:</span></td>
+                                                <td> <input type="text" id="input_humidity_max" class="form-control-line" style="width: 50px;height:30px;">
+                                                    <span class="col-md-12" style="margin-right: -5px;">最小值:</span>
+                                                    <input type="text" id="input_humidity_min" class="form-control-line" style="width: 50px;height:30px;">
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td scope="row"></td>
+                                                <td scope="row" style="text-align: right;"><span class="col-md-12" style="margin-right: -30px;">风速(m/s)最大值:</span></td>
+                                                <td> <input type="text" id="input_wind_speed_max" class="form-control-line" style="width: 50px;height:30px;">
+                                                    <span class="col-md-12" style="margin-right: -5px;">最小值:</span>
+                                                    <input type="text" id="input_wind_speed_min" class="form-control-line" style="width: 50px;height:30px;">
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td scope="row"></td>
+                                                <td scope="row" style="text-align: right;"><span class="col-md-12" style="margin-right: -30px;">二氧化碳浓度(PPM)最大值:</span></td>
+                                                <td> <input type="text" id="input_carbon_dioxide_max" class="form-control-line" style="width: 50px;height:30px;">
+                                                    <span class="col-md-12" style="margin-right: -5px;">最小值:</span>
+                                                    <input type="text" id="input_carbon_dioxide_min" class="form-control-line" style="width: 50px;height:30px;">
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td scope="row"></td>
+                                                <td scope="row" style="text-align: right;"><span class="col-md-12" style="margin-right: -30px;">空气清洁度(PPB)最大值:</span></td>
+                                                <td> <input type="text" id="input_PVOC_max" class="form-control-line" style="width: 50px;height:30px;">
+                                                    <span class="col-md-12" style="margin-right: -5px;">最小值:</span>
+                                                    <input type="text" id="input_PVOC_min" class="form-control-line" style="width: 50px;height:30px;">
+                                                </td>
+                                            </tr>
+
+                                            <tr>
+                                                <td> </td>
+                                                <td scope="row" style="text-align: right"><button class="btn btn-success" style="margin-right: -20px;" onclick="add_submit_btn()">确定</button></td>
+                                                <td scope="row"><button class="btn btn-primary" style="margin-left: 163.2px;" onclick="add_reset_btn()">重填</button></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        </div>
+                </div>
+            </div>
+{% endblock %}
+
+{% block js %}
+    <script>
+    var bim_control_list=[0,0,0,0,0]
+        function refresh_bim_data(updata_list) {
+            bim_control_list=[0,0,0,0,0] //5个BIM控制件 报警（0关 1开）、水管（0关，1开）、 空调（0关、1开）、加热（0关，1开）、风扇（0关，1开）
+            //将颜色数据存成一个全局变量   在BIM脚本中调用
+            if($('#manual_control_signal').prop("checked")==false)
+            {
+                //自动控制
+                if (updata_list[0]["beep_signal"]=="1")
+                {bim_control_list[0]=1}
+                 if (updata_list[0]["atomizer_signal"]=="1")
+                {bim_control_list[1]=1}
+                 if (updata_list[0]["water_pump_signal"]=="1")
+                {bim_control_list[2]=1}
+                 if (updata_list[0]["heat_signal"]=="1")
+                {bim_control_list[3]=1}
+                 if (updata_list[0]["fan_signal"]=="1")
+                {bim_control_list[4]=1}
+            }
+            else{
+                //手动控制
+                if($('#beep_signal').prop("checked")==true)
+                {bim_control_list[0]=1}
+                if($('#atomizer_signal').prop("checked")==true)
+                {bim_control_list[1]=1}
+                if($('#water_pump_signal').prop("checked")==true)
+                {bim_control_list[2]=1}
+                if($('#heat_signal').prop("checked")==true)
+                {bim_control_list[3]=1}
+                if($('#fan_signal').prop("checked")==true)
+                {bim_control_list[4]=1}
+            }
+        };
+
+        function submit_control_data() {
+            //判断是否为手动控制
+            if($('#manual_control_signal').prop("checked")==false)
+            {
+                //设置为自动时 将所有的开关设置为关闭状态
+                $('#beep_signal').prop('checked',false);
+                $('#atomizer_signal').prop('checked',false);
+                $('#water_pump_signal').prop('checked',false);
+                $('#heat_signal').prop('checked',false);
+                $('#fan_signal').prop('checked',false);
+                $('#atomizer_breakdown_signal').prop('checked',false);
+                $('#water_pump_breakdown_signal').prop('checked',false);
+                $('#heat_breakdown_signal').prop('checked',false);
+                $('#fan_breakdown_signal').prop('checked',false);
+                $('#dht11_breakdown_signal').prop('checked',false);
+                $('#anemograph_breakdown_signal').prop('checked',false);
+                $('#ccs811_breakdown_signal').prop('checked',false);
+            }
+            $.ajax({
+                    url: "/user_app/bim/",
+                    type: 'POST',
+                    data: {'operate': "auto_or_manual", 'control_type':  $('#manual_control_signal').prop("checked"),
+                        'beep_signal':  $('#beep_signal').prop("checked"),
+                        'atomizer_signal':$('#atomizer_signal').prop("checked"),
+                        'water_pump_signal':$('#water_pump_signal').prop("checked"),
+                        'heat_signal':$('#heat_signal').prop("checked"),
+                        'fan_signal':$('#fan_signal').prop("checked"),
+                        'atomizer_breakdown_signal':$('#atomizer_breakdown_signal').prop("checked"),
+                        'water_pump_breakdown_signal':$('#water_pump_breakdown_signal').prop("checked"),
+                        'heat_breakdown_signal':$('#heat_breakdown_signal').prop("checked"),
+                        'fan_breakdown_signal':$('#fan_breakdown_signal').prop("checked"),
+                        'dht11_breakdown_signal':$('#dht11_breakdown_signal').prop("checked"),
+                        'anemograph_breakdown_signal':$('#anemograph_breakdown_signal').prop("checked"),
+                        'ccs811_breakdown_signal':$('#ccs811_breakdown_signal').prop("checked"),
+                    }, //选择提交的数据
+                    success: function(data){
+                        if(data.status){
+                             if($('#manual_control_signal').prop("checked")==false)
+                            {layer.alert("更改为自动控制");}
+                            else{layer.alert("更改为手动控制");}
+                        }else{
+                            layer.alert(data.data);    //错误提示
+                        }
+                    }
+                });
+
+        };
+
+        //刷新报警情况在右侧的按钮旁边颜色   这是字典存储刷新情况的字典
+        function refresh_alarm_data(updata_list) {
+            if($('#manual_control_signal').prop("checked")==false)
+            {
+                if (updata_list[0]["beep_signal"]=="1")
+             {$('#color_beep_signal').css("background","#fe0000");}
+             else{$('#color_beep_signal').css("background","#ffffff");}
+             if (updata_list[0]["atomizer_signal"]=="1")
+             {$('#color_atomizer_signal').css("background","#00ff00");}
+             else{$('#color_atomizer_signal').css("background","#ffffff");}
+             if (updata_list[0]["water_pump_signal"]=="1")
+             {$('#color_water_pump_signal').css("background","#00ff00");}
+             else{$('#color_water_pump_signal').css("background","#ffffff");}
+             if (updata_list[0]["heat_signal"]=="1")
+             {$('#color_heat_signal').css("background","#00ff00");}
+             else{$('#color_heat_signal').css("background","#ffffff");}
+             if (updata_list[0]["fan_signal"]=="1")
+             {$('#color_fan_signal').css("background","#00ff00");}
+             else{$('#color_fan_signal').css("background","#ffffff");}
+             if (updata_list[0]["atomizer_breakdown_signal"]=="1")
+             {$('#color_atomizer_breakdown_signal').css("background","#fe0000");}
+             else{$('#color_atomizer_breakdown_signal').css("background","#ffffff");}
+             if (updata_list[0]["water_pump_breakdown_signal"]=="1")
+             {$('#color_water_pump_breakdown_signal').css("background","#fe0000");}
+             else{$('#color_water_pump_breakdown_signal').css("background","#ffffff");}
+             if (updata_list[0]["heat_breakdown_signal"]=="1")
+             {$('#color_heat_breakdown_signal').css("background","#fe0000");}
+             else{$('#color_heat_breakdown_signal').css("background","#ffffff");}
+             if (updata_list[0]["fan_breakdown_signal"]=="1")
+             {$('#color_fan_breakdown_signal').css("background","#fe0000");}
+             else{$('#color_fan_breakdown_signal').css("background","#ffffff");}
+             if (updata_list[0]["dht11_breakdown_signal"]=="1")
+             {$('#color_dht11_breakdown_signal').css("background","#fe0000");}
+             else{$('#color_dht11_breakdown_signal').css("background","#ffffff");}
+             if (updata_list[0]["anemograph_breakdown_signal"]=="1")
+             {$('#color_anemograph_breakdown_signal').css("background","#fe0000");}
+             else{$('#color_anemograph_breakdown_signal').css("background","#ffffff");}
+             if (updata_list[0]["ccs811_breakdown_signal"]=="1")
+             {$('#color_ccs811_breakdown_signal').css("background","#fe0000");}
+             else{$('#color_ccs811_breakdown_signal').css("background","#ffffff");}
+            }
+            else{
+             $('#color_beep_signal').css("background","#ffffff");
+             $('#color_atomizer_signal').css("background","#ffffff");
+             $('#color_water_pump_signal').css("background","#ffffff");
+             $('#color_heat_signal').css("background","#ffffff");
+             $('#color_fan_signal').css("background","#ffffff");
+             $('#color_atomizer_breakdown_signal').css("background","#ffffff");
+             $('#color_water_pump_breakdown_signal').css("background","#ffffff");
+             $('#color_heat_breakdown_signal').css("background","#ffffff");
+             $('#color_fan_breakdown_signal').css("background","#ffffff");
+             $('#color_dht11_breakdown_signal').css("background","#ffffff");
+             $('#color_anemograph_breakdown_signal').css("background","#ffffff");
+             $('#color_ccs811_breakdown_signal').css("background","#ffffff");
+            }
+        };
+
+        function draw_sensor_chart(updata_name,updata_time,updata_data) {
+            myChart = echarts.init(document.getElementById('draw_chart'));
+            myChart.hideLoading();
+            var option = {
+                animationDuration: 500,                   //调节画线的速度
+                tooltip: {trigger: 'axis'},
+                title: {
+                    left: 'center',
+                    text: '冷库环境数据变化曲线图'
+                },
+                xAxis: {
+                    name: '时间',
+                    type: 'category',
+                    data: updata_time,
+                },
+                yAxis: {
+              name: updata_name,
+              type: 'value',
+              scale:true,
+                },
+                series: [{
+                    name: updata_name,
+                    type: 'line',
+                    data: updata_data,
+                    smooth: true
+                },]
+            };
+            myChart.setOption(option, true);
+        };
+
+         function refresh_sensor_data(updata_list) {
+             //更新显示传感器数据
+             $('#temperature').html(updata_list[0]["temperature_data"]+"°C")
+             $('#humidity').html(parseInt(updata_list[0]["humidity_data"])+"%")
+             $('#wind_speed').html(parseInt(updata_list[0]["wind_speed_data"])+"m/s")    //装换成整形将前面的0去掉
+             $('#carbon_dioxide').html(parseInt(updata_list[0]["carbon_dioxide_data"])+"ppm")    //装换成整形将前面的0去掉
+             $('#PVOC').html(parseInt(updata_list[0]["PVOC_data"])+"ppb")    //装换成整形将前面的0去掉
+
+             //寻找选择的原点位置
+             updata_name=""
+             one_sensor_list=[]
+             time_list=[]
+             if ($("input[name='check_sensor']:checked").val()==1)
+             {
+                 for (var line in updata_list){
+                     one_sensor_list.push(parseInt(updata_list[line]["temperature_data"]));
+                     time_list.push(updata_list[line]["op_time"].slice(14,19)  );      //取出时间组成列表
+                 }
+                 updata_name="温度(°C)"
+                 draw_sensor_chart(updata_name,time_list,one_sensor_list);              //参数为名字   时间和数据
+             }
+
+             if ($("input[name='check_sensor']:checked").val()==2)
+             {
+                 for (var line in updata_list){
+                     one_sensor_list.push(parseInt(updata_list[line]["humidity_data"]));
+                     time_list.push(updata_list[line]["op_time"].slice(14,19)  );      //取出时间组成列表
+                 }
+                 updata_name="湿度(%)"
+                 draw_sensor_chart(updata_name,time_list,one_sensor_list);              //参数为名字   时间和数据
+             }
+
+             if ($("input[name='check_sensor']:checked").val()==3)
+             {
+                 for (var line in updata_list){
+                     one_sensor_list.push(parseInt(updata_list[line]["wind_speed_data"]));
+                     time_list.push(updata_list[line]["op_time"].slice(14,19)  );      //取出时间组成列表
+                 }
+                 updata_name="风速(m/s)"
+                 draw_sensor_chart(updata_name,time_list,one_sensor_list);              //参数为名字   时间和数据
+             }
+
+             if ($("input[name='check_sensor']:checked").val()==4)
+             {
+                 for (var line in updata_list){
+                     one_sensor_list.push(parseInt(updata_list[line]["carbon_dioxide_data"]));
+                     time_list.push(updata_list[line]["op_time"].slice(14,19)  );      //取出时间组成列表
+                 }
+                 updata_name="二氧化碳浓度(ppm)"
+                 draw_sensor_chart(updata_name,time_list,one_sensor_list);              //参数为名字   时间和数据
+             }
+
+             if ($("input[name='check_sensor']:checked").val()==5)
+             {
+                 for (var line in updata_list){
+                     one_sensor_list.push(parseInt(updata_list[line]["PVOC_data"]));
+                     time_list.push(updata_list[line]["op_time"].slice(14,19)  );      //取出时间组成列表
+                 }
+                 updata_name="空气清洁度(ppb)"
+                 draw_sensor_chart(updata_name,time_list,one_sensor_list);              //参数为名字   时间和数据
+             }
+        };
+
+         function submit_refresh_data(){
+            $.ajax({
+                url: "/user_app/bim/",
+                type: 'POST',
+                data: {'operate': "refresh_data"},   //选择提交的数据
+                success: function(data){
+                    if(data.status){
+                        refresh_sensor_data(data.data[0]);   //网页更新传感器数据
+                        refresh_alarm_data(data.data[1]);   //更新报警数据
+                        refresh_bim_data(data.data[1]);   //更新BIM数据
+                    }else{
+                        layer.alert("数据库异常");
+                    }
+                }
+            });
+        };
+        setInterval("submit_refresh_data();", 500);
+
+        function add_reset_btn(){
+                $('#input_fruit_name').val("");
+                $('#input_temperature_max').val("");
+                $('#input_temperature_min').val("");
+                $('#input_humidity_max').val("");
+                $("#input_humidity_min").val("");
+                $('#input_wind_speed_max').val("");
+                $('#input_wind_speed_min').val("");
+                $('#input_carbon_dioxide_max').val("");
+                $('#input_carbon_dioxide_min').val("");
+                $('#input_PVOC_max').val("");
+                $("#input_PVOC_min").val("");
+            };
+        //增加水果信息提交按钮事件
+        function add_submit_btn() {
+            $.ajax({
+                url: "/user_app/bim/",
+                type: 'POST',
+                data: {'operate': "add_fruit", 'input_fruit_name':  $("#input_fruit_name").val(),
+                    'input_temperature_max':$("#input_temperature_max").val(),'input_temperature_min':$("#input_temperature_min").val(),'input_humidity_max':$("#input_humidity_max").val(),
+                    'input_humidity_min':$("#input_humidity_min").val(), 'input_wind_speed_max':$("#input_wind_speed_max").val(), 'input_wind_speed_min':$("#input_wind_speed_min").val(), 'input_carbon_dioxide_max':$("#input_carbon_dioxide_max").val(), 'input_carbon_dioxide_min':$("#input_carbon_dioxide_min").val(), 'input_PVOC_max':$("#input_PVOC_max").val(), 'input_PVOC_min':$("#input_PVOC_min").val()},   //选择提交的数据
+                success: function(data){
+                    if(data.status){
+                        layer.alert("增加果品成功");
+                        add_returen();
+                        {#reload_table(data.data);#}
+                    }else{
+                        layer.alert(data.data);    //错误提示
+                    }
+                }
+            });
+        };
+        function add_fruit() {
+            $('#show_page').addClass('hide');
+            $('#add_page').removeClass('hide');
+            add_reset_btn()//清除函数
+        };
+        function change_fruit_type() {
+            $.ajax({
+                url: "/user_app/bim/",
+                type: 'POST',
+                data: {'operate': "change_fruit_type", 'change_fruit_type':  $("#fruit_select").val()},   //选择提交的数据
+                success: function(data){
+                    if(data.status){
+                         //Fruit_pull_down();
+                        layer.alert("修改冷库监测的果品类型成功");
+                    }else{
+                        layer.alert("数据库没有当前的果品类型");
+                    }
+                }
+            });
+        };
+
+        function add_returen() {
+            $('#show_page').removeClass('hide');
+            $('#add_page').addClass('hide');
+            Fruit_pull_down();   //重新加载水果栏
+        }
+
+        //返回按钮
+        function change_returen() {
+            $('#show_page').removeClass('hide');
+            $('#change_page').addClass('hide');
+        }
+
+        function Fruit_pull_down() {
+            $.ajax({
+                url: "/user_app/bim/",
+                type: 'POST',
+                data: {'operate': "load_fruit"},   //选择提交的数据
+                success: function(data){
+                    if(data.status){
+                        //console.log(data.data);
+                        $("#fruit_select").empty();   //删除 的所有子标签
+                        for (var i=0;i<data.data.length-1;i++)
+                        {
+                            if(data.data[i]==data.data[data.data.length-1])
+                            {temp="<option value="+ data.data[i]+" selected"+">"+data.data[i]+"</option>"}
+                            else
+                            { temp="<option value="+data.data[i]+ ">"+data.data[i]+"</option>"}
+                            $('#fruit_select').append(temp);
+                        }
+                    }else{
+                        layer.alert("请添加果品");
+                    }
+                }
+            });
+        };
+    </script>
+
+
+    <script>
+        $(function () {
+            $('#sidebarnav > li:nth-child(1)').addClass('selected');  //选择菜单背景
+            $('#sidebarnav > li:nth-child(1) > a').addClass('active');
+            Fruit_pull_down();        //加载数据水果下拉栏的数据
+            draw_sensor_chart();
+        });
+    </script>
+
+
+
+
+    <script>
+    //BIM脚本文件
+    //
+      Xhz.init(function () {
+   const options = {
+    modelKey: "1575603368", // 文件key
+    devcode: "825ad22ec4d5c4e61aad2ce16a0d4681", // 开发密钥
+   };
+   Xhz.attr.EnableViewController = true;   //设置视图控制器是否显示，需要在初始化主应用之前使用。
+   const app = new Xhz.App(options);
+   const { model, view, component, camera } = app;
+   const btnReset = document.querySelector("#xhz-btn-reset");
+   const btnTransparency = document.querySelector("#xhz-btn-transparency");
+    const viewer3D = view.getViewer3d();
+    viewer3D.resize(1180,400);
+
+    let componentObj;
+    let arrow1; // 存放箭头的变量
+    let arrow2; // 存放箭头的变量
+    let arrow3; // 存放箭头的变量
+    let arrow4; // 存放箭头的变量
+    let arrow5; // 存放箭头的变量
+    const scene = view.getScene();
+
+    // 设置场景自动更新
+    scene.autoUpdate = true;
+
+    model.on("load", function (event) {
+        const viewer3D = view.getViewer3d();
+
+        componentObj = viewer3D.getViewerImpl().modelManager.getComponent("1575603368_2VtBceVzb9qBh3gHFY9bLP")[0].mesh; // 获取当前构件对象数据，以便于对它进行旋转和移动
+        componentObj.matrixAutoUpdate = false; //自动更新矩阵
+        componentObj.position.x = -3800; // 更新当前构件的位置的x的值
+        componentObj.position.y =-2530; // 更新当前构件的位置的x的值
+        componentObj.position.z =4300; // 更新当前构件的位置的x的值
+
+        fan_rotate(); // 风扇旋转设置
+        arrow1 = createArrow({
+            flowDerection: "y+",
+            scale: 1.5,
+            id: "arrow1",
+        });
+        arrow1.position.x = -6300;
+        arrow1.position.z = +1100;
+        arrow1.position.y = -7500;
+        moveArrows1();
+
+        arrow2 = createArrow({
+            flowDerection: "y+",
+            scale: 1.5,
+            id: "arrow2",
+        });
+        arrow2.position.x = -6300;
+        arrow2.position.z = +1100;
+        arrow2.position.y = -6000;
+        moveArrows2();
+
+        arrow3 = createArrow({
+            flowDerection: "y+",
+            scale: 1.5,
+            id: "arrow3",
+        });
+        arrow3.position.x = -6300;
+        arrow3.position.z = +1100;
+        arrow3.position.y = -4500;
+        moveArrows3();
+
+        arrow4 = createArrow({
+            flowDerection: "y+",
+            scale: 1.5,
+            id: "arrow4",
+        });
+        arrow4.position.x = -6300;
+        arrow4.position.z = +1100;
+        arrow4.position.y = -3000;
+        moveArrows4();
+
+        arrow5 = createArrow({
+            flowDerection: "y+",
+            scale: 1.5,
+            id: "arrow5",
+        });
+        arrow5.position.x = -6300;
+        arrow5.position.z = +1100;
+        arrow5.position.y = -1500;
+        moveArrows5();
+
+        scene.remove(arrow1)
+        scene.remove(arrow2)
+        scene.remove(arrow3)
+        scene.remove(arrow4)
+        scene.remove(arrow5)
+
+        let air_conditionerHighlisht= component.getHighlight();
+		const air_conditioner_data = air_conditionerHighlisht.length > 0 ? {keys: air_conditionerHighlisht, color: 0xFFFFFF, opacity: 1} : {keys: ["1575603368_1xLjFMagr9gv5iofgLRmZ$","1575603368_1xLjFMagr9gv5iofgLRmzr"
+            ,"1575603368_1xLjFMagr9gv5iofgLRmRN"], color: 0xFFFFFF, opacity: 1};
+		component.color(air_conditioner_data);
+
+		//白色表示正常没有工作加热
+        let floor_Highlisht= component.getHighlight();
+		const floor_data = floor_Highlisht.length > 0 ? {keys: floor_Highlisht, color: 0xFFFFFF, opacity: 1} : {keys: ["1575603368_2nICO6hQ1CJfPXM5wJOjiT",
+            "1575603368_1xLjFMagr9gv5iofgLRpAz"], color: 0xFFFFFF, opacity: 1};
+		component.color(floor_data);
+
+        setInterval("bim_refresh_timer();", 500);    //0.5s 执行一次这个bim刷新函数
+    });
+    // 动画函数，每次刷新更新构件的位置的x值
+    const fan_rotate = () => {
+        componentObj.rotation.z += Math.PI * 0.1; // 将构件z轴旋转值增加Math.PI*0.005，达到旋转效果    调节转速
+        requestAnimationFrame(fan_rotate); //  浏览器每一帧刷新时执行的函数
+        view.render();
+    };
+
+    btnTransparency.onclick = function () {
+        //设置非必须组件为透明
+        let componentHighlisht= component.getHighlight();
+		const data = componentHighlisht.length > 0 ? { keys: componentHighlisht, transparency: 1 } : { keys: ["1575603368_1_$pmCup18kB7kjIv8hz32",
+                "1575603368_1_$pmCup18kB7kjIb8hz32","1575603368_1_$pmCup18kB7kjIX8hz32","1575603368_1_$pmCup18kB7kjIz8hz32",
+            "1575603368_2VtBceVzb9qBh3gHFY9aNI","1575603368_1_$pmCup18kB7kjIj8hzZh","1575603368_07GtvmlHbETvQh5Lo0mVXK",
+            "1575603368_07GtvmlHbETvQh5Lo0mVci","1575603368_07GtvmlHbETvQh5Lo0mVaK","1575603368_3fV1M1Gy54V9K3$xftuYxE",
+            "1575603368_3fV1M1Gy54V9K3$xftuY_n","1575603368_3fV1M1Gy54V9K3$xftuXEK","1575603368_3fV1M1Gy54V9K3$xftuXAK",
+            "1575603368_1_$pmCup18kB7kjIj8hY9d"], transparency: 1 };
+		component.removeHighlight();
+		component.transparency(data);
+    };
+    btnReset.onclick = function () {
+		view.resetScene();
+    };
+
+    bim_refresh_timer = function () {
+        //报警（0关 1开）、水管（0关，1开）、 空调（0关、1开）、加热（0关，1开）、风扇（0关，1开）
+        if(bim_control_list[1]==1)
+        {
+            scene.add(arrow1)
+            scene.add(arrow2)
+            scene.add(arrow3)
+            scene.add(arrow4)
+            scene.add(arrow5)   //水管开
+        }
+        else
+        {
+            scene.remove(arrow1) //水管关
+            scene.remove(arrow2)
+            scene.remove(arrow3)
+            scene.remove(arrow4)
+            scene.remove(arrow5)
+
+        }
+        if(bim_control_list[2]==1)
+        {
+            let air_conditionerHighlisht= component.getHighlight();   //空调开
+            const data = air_conditionerHighlisht.length > 0 ? {keys: air_conditionerHighlisht, color: 0x008000, opacity: 1} : {keys: ["1575603368_1xLjFMagr9gv5iofgLRmZ$","1575603368_1xLjFMagr9gv5iofgLRmzr"
+                ,"1575603368_1xLjFMagr9gv5iofgLRmRN"], color: 0x008000, opacity: 1};
+            component.color(data);
+        }
+        else
+        {
+            let air_conditionerHighlisht= component.getHighlight();   //空调关
+            const air_conditioner_data = air_conditionerHighlisht.length > 0 ? {keys: air_conditionerHighlisht, color: 0xFFFFFF, opacity: 1} : {keys: ["1575603368_1xLjFMagr9gv5iofgLRmZ$","1575603368_1xLjFMagr9gv5iofgLRmzr"
+                ,"1575603368_1xLjFMagr9gv5iofgLRmRN"], color: 0xFFFFFF, opacity: 1};
+            component.color(air_conditioner_data);
+        }
+        if(bim_control_list[4]==1)
+        {componentObj.matrixAutoUpdate = true;} //开始转动
+        else
+        {componentObj.matrixAutoUpdate = false;} //停止转动
+        if(bim_control_list[0]==1)      //报警中
+        {
+            //地板颜色红色表示故障报警
+            let floor_Highlisht= component.getHighlight();
+            const floor_data = floor_Highlisht.length > 0 ? {keys: floor_Highlisht, color: 0xff0000, opacity: 1} : {keys: ["1575603368_2nICO6hQ1CJfPXM5wJOjiT"], color: 0xff0000, opacity: 1};
+            component.color(floor_data);
+
+            //墙壁电热填充为白色
+            let heart_Highlisht= component.getHighlight();
+            const heart_data = heart_Highlisht.length > 0 ? {keys: heart_Highlisht, color:0xFFFFFF, opacity: 1} : {keys: ["1575603368_1xLjFMagr9gv5iofgLRpAz"], color: 0xFFFFFF, opacity: 1};
+            component.color(heart_data);
+        }
+        else{
+            if(bim_control_list[3]==1)
+            {
+                //地板颜色橙色表示加热  和墙壁电热片为橙色
+                let floor_Highlisht= component.getHighlight();
+                const floor_data = floor_Highlisht.length > 0 ? {keys: floor_Highlisht, color: 0xFFA500, opacity: 1} : {keys: ["1575603368_2nICO6hQ1CJfPXM5wJOjiT",
+                    "1575603368_1xLjFMagr9gv5iofgLRpAz"], color: 0xFFA500, opacity: 1};
+                component.color(floor_data);
+            }
+            else
+            {
+            //白色表示正常没有工作加热
+                let floor_Highlisht= component.getHighlight();
+                const floor_data = floor_Highlisht.length > 0 ? {keys: floor_Highlisht, color: 0xFFFFFF, opacity: 1} : {keys: ["1575603368_2nICO6hQ1CJfPXM5wJOjiT",
+                    "1575603368_1xLjFMagr9gv5iofgLRpAz"], color: 0xFFFFFF, opacity: 1};
+                component.color(floor_data);
+            }
+        }
+    };
+          /**
+	 * 该方法用来添加三维箭头
+	 * @param [options] {object} 参数
+	 * @param [options.color]{16进制颜色}  箭头的颜色 例如0xff0000
+	 * @param [options.depthTest]{boolen}  是否关闭箭头的深度测试
+	 * @param [options.id]{String}  箭头的key，默认为随机
+	 * @param [options.flowDerection]{String}  标签的朝向， 'x+', 'x-', 'y+', 'y-', 'z+', 'z-', 默认为'y+'
+	 * @param [options.addToScene]{boolen} 是否添加到场景，默认为true
+	 * @return: arrow { Three的Object3D }
+	 */
+    createArrow = function (options) {
+        // 默认设置
+        var defaultSetting = {
+            color: 0x008000,
+            depthTest: false,
+            scale: 1,
+            flowDerection: "y+",
+            id: THREE.Math.generateUUID(),
+            addToScene: true,
+            key: "",
+        };
+        const option = Object.assign(defaultSetting, options);
+        var arrow = new THREE.Object3D();
+        arrow.key = option.key;
+        var geometry = new THREE.CylinderGeometry(100, 100, 40, 3, 1, false);
+        var geometry2 = new THREE.CubeGeometry(40, 180, 40);
+        var material = new THREE.MeshBasicMaterial({
+            color: option.color,
+            transparent: false,
+        });
+        var cube = new THREE.Mesh(geometry, material);
+        var cube2 = new THREE.Mesh(geometry2, material);
+        cube2.position.y = -40;
+        switch (option.flowDerection) {
+            case "y-":
+                cube.rotation.x += Math.PI / 2;
+                cube.rotation.z -= Math.PI / 2;
+                cube2.position.y += 100;
+                break;
+            case "y+":
+                cube.rotation.x += 3 * (Math.PI / 2);
+                cube.rotation.z -= Math.PI / 2;
+                cube2.position.y -= 100;
+                break;
+            case "x-":
+                cube.rotation.y -= Math.PI / 2;
+                cube.rotation.x -= Math.PI / 2;
+                cube2.rotation.z -= Math.PI / 2;
+                cube2.rotation.x -= Math.PI / 2;
+                cube2.position.x += 100;
+                break;
+            case "x+":
+                cube.rotation.y += Math.PI / 2;
+                cube.rotation.x -= Math.PI / 2;
+                cube2.rotation.z -= Math.PI / 2;
+                cube2.rotation.x -= Math.PI / 2;
+                cube2.position.x -= 100;
+                break;
+            case "z+":
+                cube.rotation.z += Math.PI / 2;
+                cube2.rotation.x -= Math.PI / 2;
+                cube2.position.z -= 100;
+                break;
+            case "z-":
+                cube.rotation.z -= Math.PI / 2;
+                cube.rotation.x -= Math.PI;
+                cube2.rotation.x += Math.PI / 2;
+                cube2.position.z += 100;
+                break;
+        }
+        arrow.scale.set(option.scale, option.scale, option.scale);
+        arrow.add(cube);
+        arrow.add(cube2);
+        arrow.depthTest = option.depthTest;
+        if (option.addToScene) {
+            scene.add(arrow);
+        }
+        return arrow;
+    };
+
+    // 箭头移动函数
+    const moveArrows1 = () => {
+        let posSrc = { pos: 0 }; // 初始化一个动画需要更新的值，tweenjs使用
+        // 每次更新需要调用 TWEEN.update函数
+        const animate = () => {
+            view.render();
+            TWEEN.update(); // 每次更新需要调用一下 TWEEN.update() 以更新TWEEN的值
+            requestAnimationFrame(animate); //  浏览器每一帧刷新时执行的函数
+        };
+
+        // tween的更新函数
+        const onUpdate = () => {
+            arrow1.position.y += 10 * posSrc.pos; // 每次更新将箭头的位置的y值增加一下
+        };
+        // tweenBack的更新函数
+        const onUpdate2 = () => {
+            arrow1.position.y = -7500; // 每次更新将箭头的位置的y值设置为0
+        };
+        // 实例化一个tween对象，设置它的参数posSrc在3秒内从1减到0
+        const tween = new TWEEN.Tween(posSrc)
+            .to({ pos: 1 }, 2000) // 将posSrc.pos的值用3s变成1
+            .onUpdate(onUpdate) // 更新时执行的函数
+            .easing(TWEEN.Easing.Sinusoidal.InOut) // posSrc变化的规律
+            .start(); // 开始执行此动画
+        // 实例化另一个tween对象，设置它的参数posSrc在3秒内从0加到1
+        const tweenBack = new TWEEN.Tween(posSrc)
+            .to({ pos: 0 }, 20) // 将posSrc.pos的值用3s变成0
+            .onUpdate(onUpdate2) // 更新时执行的函数
+            .easing(TWEEN.Easing.Sinusoidal.InOut) // posSrc变化的规律
+            .chain(tween); // 与tween衔接
+        tween.chain(tweenBack); // 与tweenBack衔接
+        animate(); // 执行动画函数
+    };
+    const moveArrows2 = () => {
+        let posSrc = { pos: 0 }; // 初始化一个动画需要更新的值，tweenjs使用
+        // 每次更新需要调用 TWEEN.update函数
+        const animate = () => {
+            view.render();
+            TWEEN.update(); // 每次更新需要调用一下 TWEEN.update() 以更新TWEEN的值
+            requestAnimationFrame(animate); //  浏览器每一帧刷新时执行的函数
+        };
+
+        // tween的更新函数
+        const onUpdate = () => {
+            arrow2.position.y += 10 * posSrc.pos; // 每次更新将箭头的位置的y值增加一下
+        };
+        // tweenBack的更新函数
+        const onUpdate2 = () => {
+            arrow2.position.y = -6000; // 每次更新将箭头的位置的y值设置为0
+        };
+        // 实例化一个tween对象，设置它的参数posSrc在3秒内从1减到0
+        const tween = new TWEEN.Tween(posSrc)
+            .to({ pos: 1 }, 2000) // 将posSrc.pos的值用3s变成1
+            .onUpdate(onUpdate) // 更新时执行的函数
+            .easing(TWEEN.Easing.Sinusoidal.InOut) // posSrc变化的规律
+            .start(); // 开始执行此动画
+        // 实例化另一个tween对象，设置它的参数posSrc在3秒内从0加到1
+        const tweenBack = new TWEEN.Tween(posSrc)
+            .to({ pos: 0 }, 20) // 将posSrc.pos的值用3s变成0
+            .onUpdate(onUpdate2) // 更新时执行的函数
+            .easing(TWEEN.Easing.Sinusoidal.InOut) // posSrc变化的规律
+            .chain(tween); // 与tween衔接
+        tween.chain(tweenBack); // 与tweenBack衔接
+        animate(); // 执行动画函数
+    };
+    const moveArrows3 = () => {
+        let posSrc = { pos: 0 }; // 初始化一个动画需要更新的值，tweenjs使用
+        // 每次更新需要调用 TWEEN.update函数
+        const animate = () => {
+            view.render();
+            TWEEN.update(); // 每次更新需要调用一下 TWEEN.update() 以更新TWEEN的值
+            requestAnimationFrame(animate); //  浏览器每一帧刷新时执行的函数
+        };
+
+        // tween的更新函数
+        const onUpdate = () => {
+            arrow3.position.y += 10 * posSrc.pos; // 每次更新将箭头的位置的y值增加一下
+        };
+        // tweenBack的更新函数
+        const onUpdate2 = () => {
+            arrow3.position.y = -4500; // 每次更新将箭头的位置的y值设置为0
+        };
+        // 实例化一个tween对象，设置它的参数posSrc在3秒内从1减到0
+        const tween = new TWEEN.Tween(posSrc)
+            .to({ pos: 1 }, 2000) // 将posSrc.pos的值用3s变成1
+            .onUpdate(onUpdate) // 更新时执行的函数
+            .easing(TWEEN.Easing.Sinusoidal.InOut) // posSrc变化的规律
+            .start(); // 开始执行此动画
+        // 实例化另一个tween对象，设置它的参数posSrc在3秒内从0加到1
+        const tweenBack = new TWEEN.Tween(posSrc)
+            .to({ pos: 0 }, 20) // 将posSrc.pos的值用3s变成0
+            .onUpdate(onUpdate2) // 更新时执行的函数
+            .easing(TWEEN.Easing.Sinusoidal.InOut) // posSrc变化的规律
+            .chain(tween); // 与tween衔接
+        tween.chain(tweenBack); // 与tweenBack衔接
+        animate(); // 执行动画函数
+    };
+    const moveArrows4 = () => {
+        let posSrc = { pos: 0 }; // 初始化一个动画需要更新的值，tweenjs使用
+        // 每次更新需要调用 TWEEN.update函数
+        const animate = () => {
+            view.render();
+            TWEEN.update(); // 每次更新需要调用一下 TWEEN.update() 以更新TWEEN的值
+            requestAnimationFrame(animate); //  浏览器每一帧刷新时执行的函数
+        };
+
+        // tween的更新函数
+        const onUpdate = () => {
+            arrow4.position.y += 10 * posSrc.pos; // 每次更新将箭头的位置的y值增加一下
+        };
+        // tweenBack的更新函数
+        const onUpdate2 = () => {
+            arrow4.position.y = -3000; // 每次更新将箭头的位置的y值设置为0
+        };
+        // 实例化一个tween对象，设置它的参数posSrc在3秒内从1减到0
+        const tween = new TWEEN.Tween(posSrc)
+            .to({ pos: 1 }, 2000) // 将posSrc.pos的值用3s变成1
+            .onUpdate(onUpdate) // 更新时执行的函数
+            .easing(TWEEN.Easing.Sinusoidal.InOut) // posSrc变化的规律
+            .start(); // 开始执行此动画
+        // 实例化另一个tween对象，设置它的参数posSrc在3秒内从0加到1
+        const tweenBack = new TWEEN.Tween(posSrc)
+            .to({ pos: 0 }, 20) // 将posSrc.pos的值用3s变成0
+            .onUpdate(onUpdate2) // 更新时执行的函数
+            .easing(TWEEN.Easing.Sinusoidal.InOut) // posSrc变化的规律
+            .chain(tween); // 与tween衔接
+        tween.chain(tweenBack); // 与tweenBack衔接
+        animate(); // 执行动画函数
+    };
+    const moveArrows5 = () => {
+        let posSrc = { pos: 0 }; // 初始化一个动画需要更新的值，tweenjs使用
+        // 每次更新需要调用 TWEEN.update函数
+        const animate = () => {
+            view.render();
+            TWEEN.update(); // 每次更新需要调用一下 TWEEN.update() 以更新TWEEN的值
+            requestAnimationFrame(animate); //  浏览器每一帧刷新时执行的函数
+        };
+
+        // tween的更新函数
+        const onUpdate = () => {
+            arrow5.position.y += 10 * posSrc.pos; // 每次更新将箭头的位置的y值增加一下
+        };
+        // tweenBack的更新函数
+        const onUpdate2 = () => {
+            arrow5.position.y = -1500; // 每次更新将箭头的位置的y值设置为0
+        };
+        // 实例化一个tween对象，设置它的参数posSrc在3秒内从1减到0
+        const tween = new TWEEN.Tween(posSrc)
+            .to({ pos: 1 }, 2000) // 将posSrc.pos的值用3s变成1
+            .onUpdate(onUpdate) // 更新时执行的函数
+            .easing(TWEEN.Easing.Sinusoidal.InOut) // posSrc变化的规律
+            .start(); // 开始执行此动画
+        // 实例化另一个tween对象，设置它的参数posSrc在3秒内从0加到1
+        const tweenBack = new TWEEN.Tween(posSrc)
+            .to({ pos: 0 }, 20) // 将posSrc.pos的值用3s变成0
+            .onUpdate(onUpdate2) // 更新时执行的函数
+            .easing(TWEEN.Easing.Sinusoidal.InOut) // posSrc变化的规律
+            .chain(tween); // 与tween衔接
+        tween.chain(tweenBack); // 与tweenBack衔接
+        animate(); // 执行动画函数
+    };
+  });
+    </script>
+
+{% endblock %}
